@@ -1,0 +1,31 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String   @unique
+  password String
+  createdAt DateTime @default(now())
+  stations ChargingStation[]
+}
+
+model ChargingStation {
+  id            Int     @id @default(autoincrement())
+  name          String
+  latitude      Float
+  longitude     Float
+  status        String
+  powerOutput   Float
+  connectorType String
+  createdBy     Int
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [createdBy], references: [id])
+}
